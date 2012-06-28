@@ -20,12 +20,15 @@ plotDitribucionMuestral <- function(ns=c(5, 10, 50), N=5000, kernel="c",
   
   ns <- sort(ns, decreasing=T)
   cols <- rainbow(length(ns))
+  distribuciones_muestrales <- list()
   
   for ( i in 1:length(ns) ) {
     n <- ns[i]
+    name = paste("n = ", n)
     g <- gl(N, n)
     x <- rnorm(n*N)
     distribucion_muestral <- sapply(split(x, g), FUN=mean)
+    distribuciones_muestrales[[name]] <- summary(distribucion_muestral)
     density_distribucion_muestral <- density(distribucion_muestral,
                                              kernel=kernel, bw=bw, ...)
     if (i == 1)
@@ -35,5 +38,5 @@ plotDitribucionMuestral <- function(ns=c(5, 10, 50), N=5000, kernel="c",
   }
   abline(v=0, col=grey(.8))
   legend("topright", title="n = ", as.character(ns), fill=cols)
-  summary(distribucion_muestral)
+  return(distribuciones_muestrales)
 }
