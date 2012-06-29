@@ -7,7 +7,7 @@
 
 plotDitribucionMuestral <- function(ns=c(5, 10, 50), N=5000, kernel="c",
                                     bw="SJ", estadistico="media", media=0,
-                                    ds=1, ...) {
+                                    varianza=1, ...) {
   # Genero N muestras aleatorias de tamaño ns = 3 de la distribucion normal
   # estandar y grafica la funcion de densidad de probabilidad de la media o sd.
   # 
@@ -18,14 +18,14 @@ plotDitribucionMuestral <- function(ns=c(5, 10, 50), N=5000, kernel="c",
   #   FUN: estimador que se desea observar (mean o sd)
   # 
   # Returns: nothing.
-  stopifnot( estadistico %in% c("media", "sd") )
+  stopifnot( estadistico %in% c("media", "varianza") )
 
   if ( estadistico == "media" ) {
     FUN <- mean
     valor_buscado <- media
   } else {
-    FUN <- sd
-    valor_buscado <- ds
+    FUN <- var
+    valor_buscado <- varianza
   }
   
   ns <- sort(ns, decreasing=T)
@@ -36,13 +36,13 @@ plotDitribucionMuestral <- function(ns=c(5, 10, 50), N=5000, kernel="c",
     n <- ns[i]
     name = paste("n = ", n)
     g <- gl(N, n)
-    x <- rnorm(n*N, mean=media, sd=ds)
+    x <- rnorm(n*N, mean=media, sd=varianza^2)
     distribucion_muestral <- sapply(split(x, g), FUN=FUN)
     distribuciones_muestrales[[name]] <- summary(distribucion_muestral)
     density_distribucion_muestral <- density(distribucion_muestral,
-                                             kernel=kernel, bw=bw, ...)
+                                             kernel=kernel, bw=bw)
     if (i == 1)
-      plot(density_distribucion_muestral, col=cols[i], lwd=2)
+      plot(density_distribucion_muestral, col=cols[i], lwd=2, ...)
     else
       lines(density_distribucion_muestral, col=cols[i], lwd=2)
   }
