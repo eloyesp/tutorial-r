@@ -7,7 +7,7 @@
 
 plotDitribucionMuestral <- function(ns=c(5, 10, 50), N=5000, kernel="c",
                                     bw="SJ", estadistico="media", media=0,
-                                    varianza=1, ...) {
+                                    varianza=1, aproximar=F, ...) {
   # Genero N muestras aleatorias de tamaño ns = 3 de la distribucion normal
   # estandar y grafica la funcion de densidad de probabilidad de la media o sd.
   # 
@@ -45,6 +45,10 @@ plotDitribucionMuestral <- function(ns=c(5, 10, 50), N=5000, kernel="c",
       plot(density_distribucion_muestral, col=cols[i], lwd=2, ...)
     else
       lines(density_distribucion_muestral, col=cols[i], lwd=2)
+    if (aproximar)
+      lines(x=density_distribucion_muestral$x, 
+            y=dnorm(density_distribucion_muestral$x, mean=media,
+                    sd=sqrt(varianza/n)), col=cols[i], lty="dotted")
   }
 
   abline(v=valor_buscado, col=grey(.8))
